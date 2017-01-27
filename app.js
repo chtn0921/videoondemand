@@ -10,29 +10,31 @@ console.log("app start");
 
 var mongoose = require('mongoose');
 var passport = require('passport');
-console.log("app step1");
+//console.log("app step1");
 // connect MongoDB
-mongoose.connect('mongodb://localhost/vod', function(err,db){
+//mongoose.connect('mongodb://localhost/vod', function(err,db){
+mongoose.connect(process.env.MONGOLAB_URI, function(err,db){
     if (!err){
-        console.log('Connected to /vod!');
+        console.log('Connected to /vod!', process.env.MONGOLAB_URI);
     } else{
+        console.log('Can not Connected to /vod! Errors:');
         console.dir(err); //failed to connect
     }
 });
-console.log("app step2");
+//console.log("app step2");
 require('./models/Posts');
 require('./models/Comments');
 require('./models/Users');
 require('./config/passport');
-console.log("app step3");
+//console.log("app step3");
 var upload = require('./routes/upload');
 var routes = require('./routes/index');
 var users = require('./routes/users');
-console.log("app step4");
+//console.log("app step4");
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-console.log("app step5");
+//console.log("app step5");
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
@@ -47,18 +49,18 @@ app.use('/moment-script', express.static(path.join(__dirname, 'node_modules/mome
 app.use('/nmd', express.static(path.join(__dirname, 'node_modules')));
 
 app.use(passport.initialize());
-console.log("app step6");
+//console.log("app step6");
 app.use('/', routes);
 app.use('/users', users);
 app.use('/upload', upload);
-console.log("app step7");
+//console.log("app step7");
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
-console.log("app step8");
+//console.log("app step8");
 // error handlers
 
 // development error handler
@@ -72,7 +74,7 @@ if (app.get('env') === 'development') {
         });
     });
 }
-console.log("app step9");
+//console.log("app step9");
 // production error handler
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
@@ -82,7 +84,7 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
-console.log("app step10");
+//console.log("app step10");
 
 module.exports = app;
-console.log("app step11");
+//console.log("app step11");

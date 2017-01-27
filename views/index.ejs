@@ -1,22 +1,16 @@
 <html>
 <head>
   <title>Flapper News</title>
-  <!-- <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script> -->
-  <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="nmd/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="stylesheets/style.css" rel="stylesheet">
   <link rel="stylesheet" href="nmd/angular-bootstrap-datetimepicker/src/css/datetimepicker.css"/>
-  <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>   -->
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
   <script type="text/javascript" src="nmd/bootstrap/dist/js/bootstrap.js"></script>
   <script type="text/javascript" src="nmd/moment/min/moment.min.js"></script>
-  <!-- <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script> -->
   <script type="text/javascript" src="nmd/angular/angular.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.0/angular-ui-router.min.js"></script>
   <script src="https://angular-file-upload.appspot.com/js/ng-file-upload-shim.js"></script>
   <script src="https://angular-file-upload.appspot.com/js/ng-file-upload.js"></script>
-<!-- <link href="/abdtp-files/css/angular-datepicker.css" rel="stylesheet" type="text/css" />
-  <script src="/abdtp-files/js/angular-datepicker.js"></script> -->
-<!-- <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css"> -->
   <script type="text/javascript" src="nmd/angular-bootstrap-datetimepicker/src/js/datetimepicker.js"></script>
   <script type="text/javascript" src="nmd/angular-bootstrap-datetimepicker/src/js/datetimepicker.templates.js"></script>  
   <script src="javascripts/angularApp.js"></script>
@@ -34,98 +28,194 @@
     </ul>
   </nav>
   
-   <div class="row">
-    <div class="col-md-6 col-md-offset-3">
+  <div class="row">
+    <div class="text-center">
       <ui-view></ui-view>
     </div>
   </div>
 
   <script type="text/ng-template" id="/home.html">
     <div class="page-header">
-      <h1>Flapper News</h1>
+      <h1>Video On Demand</h1>
     </div>    
     <div id="post-list-wrap" class="row">
-      <table class="table table-inverse">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Title</th>
-            <th>Author</th>            
-            <th>Description</th>
-            <th>Actions</th>
-          </tr>
-          <tr ng-repeat="post in posts | orderBy: '-upvotes'">
-            <td>{{$index+1}}</td>            
-            <td>
-              <span><img src="{{post.files[0] ? post.files[0] : '/uploads/no-image-icon.png'}}" class="img-rounded" alt="news-img" width="100" height="100"/></span>
-              <span style="font-size:20px;margin-left:10px">
-              <a ng-show="post.link" href="{{post.link ? post.link : '#'}}">{{post.title}}</a>
-              <span ng-hide="post.link">{{post.title}}</span> 
-            </td>
-            <td><span ng-show="post.author">posted by <a>{{post.author}}</a> |</span></td>
-            <td><p class="description">{{post.description}}</p></td>
-            <td>
-              <span class="glyphicon glyphicon-thumbs-up" ng-click="upvote(post)"></span>
-              {{post.upvotes}}
-              <span class="glyphicon glyphicon-thumbs-down" ng-click="downvote(post)"></span>
-              <span><a class="button" href="/posts/{{post._id}}"><span class="glyphicon glyphicon-check"></span></a></span>
-              <span class="glyphicon glyphicon-trash" ng-click="remove(post)"></span>
-            </td>            
-          </tr>
-        </thead>
-      </table>  
-        <!-- <div ng-repeat="post in posts | orderBy: '-upvotes'">
-          <span class="glyphicon glyphicon-thumbs-up" ng-click="upvote(post)"></span>
-            {{post.upvotes}}
-          <span class="glyphicon glyphicon-thumbs-down" ng-click="downvote(post)"></span>
-          <span style="font-size:20px;margin-left:10px">
-            <a ng-show="post.link" href="{{post.link ? post.link : '#'}}">{{post.title}}</a>
-            <span ng-hide="post.link">{{post.title}}</span>
-            <span ng-show="post.author">posted by <a>{{post.author}}</a> |</span>      
-          </span>
-          <span><a href="#/posts/{{post._id}}">Comments</a>({{post.comments.length}})</span>
-          <span><img src="{{post.files[0] ? post.files[0] : '/uploads/no-image-icon.png'}}" class="img-rounded" alt="news-img" width="100" height="100"/></span>
-          <p class="description">{{post.description}}</p>
-        </div> -->
-    </div>
-    <form ng-submit="addPost()" ng-show="isLoggedIn()" style="margin-top:30px" enctype="multipart/form-data" name="postForm"> 
-      <h3>Add a new post:</h3>
-      <div class="form-group">
-        <input type="text" class="form-control" placeholder="Title"  ng-model="title"/>
-      </div>
-      <div class="form-group">
-        <input type="text" class="form-control" placeholder="Link" ng-model="link"/>
-      </div>
-      <div class="form-group">
-        <textarea class="form-control" placeholder="Description" ng-model="description"/></textarea>
-      </div>
-      <div class="form-group">
-        <select ng-model="status" placeholder="Choose a State" class="form-control" required ng-options='option.value as option.name for option in typeOptions'></select>
-      </div>
-      <div class="form-group">
-        <select ng-model="status" placeholder="Choose a Category" class="form-control" required ng-options='category.value as category.name for category in categories'></select>
-        <button ng-click="addCategory()">Add Category</button>
-      </div>
-      <div class="form-group">
-        <!-- <datetimepicker data-ng-model="date"></datetimepicker> -->
-        <div class="dropdown">
-          <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="#">
-            <div class="input-group"><input type="text" class="form-control" data-ng-model="created"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-            </div>
-          </a>
-          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-            <datetimepicker data-ng-model="created" data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }" data-on-set-time="onTimeSet(newDate, oldDate)"/>
-          </ul>
-        </div>
-      </div>
-      <div class="form-group">
-        <!-- <input type="file" class="" ng-model="image"/> -->
-          <input type="file" ngf-select ng-model="picFile" name="file" accept="image/*" ngf-max-size="2MB" ngf-model-invalid="errorFile">
-          <i ng-show="postForm.file.$error.maxSize">File too large {{errorFile.size / 1000000|number:1}}MB: max 2M</i>
-          <img ng-show="postForm.file.$valid" ngf-thumbnail="picFile" class="thumb"> <button ng-click="picFile = null" ng-show="picFile">Remove</button>
-      </div>
-      <button type="submit" class="btn btn-primary">Post</button>
-    </form>
+      <div class="container">
+        <div class="col-xs-12">
+            <div class="carousel slide" id="myCarousel">
+                <div class="carousel-inner">
+                    <div class="item active">
+                      <ul class="thumbnails">
+                        <li class="col-sm-3">
+                            <div class="fff">
+                              <div class="thumbnail">
+                                <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
+                              </div>
+                              <div class="caption">
+                                <h4>Praesent commodo</h4>
+                                <p>Nullam Condimentum Nibh Etiam Sem</p>
+                                <a class="btn btn-mini" href="#">» Read More</a>
+                              </div>
+                            </div>
+                        </li>
+                        <li class="col-sm-3">
+                          <div class="fff">
+                            <div class="thumbnail">
+                              <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
+                            </div>
+                            <div class="caption">
+                              <h4>Praesent commodo</h4>
+                              <p>Nullam Condimentum Nibh Etiam Sem</p>
+                              <a class="btn btn-mini" href="#">» Read More</a>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="col-sm-3">
+                          <div class="fff">
+                            <div class="thumbnail">
+                              <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
+                            </div>
+                            <div class="caption">
+                              <h4>Praesent commodo</h4>
+                              <p>Nullam Condimentum Nibh Etiam Sem</p>
+                              <a class="btn btn-mini" href="#">» Read More</a>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="col-sm-3">
+                            <div class="fff">
+                              <div class="thumbnail">
+                                <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
+                              </div>
+                              <div class="caption">
+                                <h4>Praesent commodo</h4>
+                                <p>Nullam Condimentum Nibh Etiam Sem</p>
+                                <a class="btn btn-mini" href="#">» Read More</a>
+                              </div>
+                            </div>
+                        </li>
+                      </ul>
+                    </div><!-- /Slide1 --> 
+                    <div class="item">
+                      <ul class="thumbnails">
+                        <li class="col-sm-3">
+                          <div class="fff">
+                            <div class="thumbnail">
+                              <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
+                            </div>
+                            <div class="caption">
+                              <h4>Praesent commodo</h4>
+                              <p>Nullam Condimentum Nibh Etiam Sem</p>
+                              <a class="btn btn-mini" href="#">» Read More</a>
+                            </div>
+                          </div>
+                        </li>
+                                <li class="col-sm-3">
+                      <div class="fff">
+                        <div class="thumbnail">
+                          <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
+                        </div>
+                        <div class="caption">
+                          <h4>Praesent commodo</h4>
+                          <p>Nullam Condimentum Nibh Etiam Sem</p>
+                          <a class="btn btn-mini" href="#">» Read More</a>
+                        </div>
+                                    </div>
+                                </li>
+                                <li class="col-sm-3">
+                      <div class="fff">
+                        <div class="thumbnail">
+                          <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
+                        </div>
+                        <div class="caption">
+                          <h4>Praesent commodo</h4>
+                          <p>Nullam Condimentum Nibh Etiam Sem</p>
+                          <a class="btn btn-mini" href="#">» Read More</a>
+                        </div>
+                                    </div>
+                                </li>
+                                <li class="col-sm-3">
+                      <div class="fff">
+                        <div class="thumbnail">
+                          <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
+                        </div>
+                        <div class="caption">
+                          <h4>Praesent commodo</h4>
+                          <p>Nullam Condimentum Nibh Etiam Sem</p>
+                          <a class="btn btn-mini" href="#">» Read More</a>
+                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                      </div><!-- /Slide2 --> 
+                    <div class="item">
+                            <ul class="thumbnails">
+                                <li class="col-sm-3"> 
+                      <div class="fff">
+                        <div class="thumbnail">
+                          <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
+                        </div>
+                        <div class="caption">
+                          <h4>Praesent commodo</h4>
+                          <p>Nullam Condimentum Nibh Etiam Sem</p>
+                          <a class="btn btn-mini" href="#">» Read More</a>
+                        </div>
+                                    </div>
+                                </li>
+                                <li class="col-sm-3">
+                      <div class="fff">
+                        <div class="thumbnail">
+                          <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
+                        </div>
+                        <div class="caption">
+                          <h4>Praesent commodo</h4>
+                          <p>Nullam Condimentum Nibh Etiam Sem</p>
+                          <a class="btn btn-mini" href="#">» Read More</a>
+                        </div>
+                                    </div>
+                                </li>
+                                <li class="col-sm-3">
+                      <div class="fff">
+                        <div class="thumbnail">
+                          <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
+                        </div>
+                        <div class="caption">
+                          <h4>Praesent commodo</h4>
+                          <p>Nullam Condimentum Nibh Etiam Sem</p>
+                          <a class="btn btn-mini" href="#">» Read More</a>
+                        </div>
+                                    </div>
+                                </li>
+                                <li class="col-sm-3">
+                      <div class="fff">
+                        <div class="thumbnail">
+                          <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
+                        </div>
+                        <div class="caption">
+                          <h4>Praesent commodo</h4>
+                          <p>Nullam Condimentum Nibh Etiam Sem</p>
+                          <a class="btn btn-mini" href="#">» Read More</a>
+                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                      </div><!-- /Slide3 --> 
+                </div>
+                
+               
+             <nav>
+              <ul class="control-box pager">
+                <li><a data-slide="prev" href="#myCarousel" class=""><i class="glyphicon glyphicon-chevron-left"></i></a></li>
+                <li><a data-slide="next" href="#myCarousel" class=""><i class="glyphicon glyphicon-chevron-right"></i></li>
+              </ul>
+            </nav>
+             <!-- /.control-box -->   
+                                      
+            </div><!-- /#myCarousel -->
+                
+        </div><!-- /.col-xs-12 -->          
+
+        </div><!-- /.container -->    
+    </div>    
   	<div ng-hide="isLoggedIn()">
   	  <h3>You need to <a href="/login">Log In</a> or <a href="/register">Register</a> before you can add a post.</h3>
   	</div>
