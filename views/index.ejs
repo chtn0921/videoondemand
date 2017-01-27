@@ -1,0 +1,217 @@
+<html>
+<head>
+  <title>Flapper News</title>
+  <!-- <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script> -->
+  <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="stylesheets/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="nmd/angular-bootstrap-datetimepicker/src/css/datetimepicker.css"/>
+  <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>   -->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+  <script type="text/javascript" src="nmd/bootstrap/dist/js/bootstrap.js"></script>
+  <script type="text/javascript" src="nmd/moment/min/moment.min.js"></script>
+  <!-- <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script> -->
+  <script type="text/javascript" src="nmd/angular/angular.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.0/angular-ui-router.min.js"></script>
+  <script src="https://angular-file-upload.appspot.com/js/ng-file-upload-shim.js"></script>
+  <script src="https://angular-file-upload.appspot.com/js/ng-file-upload.js"></script>
+<!-- <link href="/abdtp-files/css/angular-datepicker.css" rel="stylesheet" type="text/css" />
+  <script src="/abdtp-files/js/angular-datepicker.js"></script> -->
+<!-- <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css"> -->
+  <script type="text/javascript" src="nmd/angular-bootstrap-datetimepicker/src/js/datetimepicker.js"></script>
+  <script type="text/javascript" src="nmd/angular-bootstrap-datetimepicker/src/js/datetimepicker.templates.js"></script>  
+  <script src="javascripts/angularApp.js"></script>
+  <script src="javascripts/factories.js"></script>
+  <script src="javascripts/controllers.js"></script> 
+  <base href="/"> 
+</head>
+<body ng-app="flapperNews">
+  <nav class="navbar navbar-default pull-right" ng-controller="NavCtrl">
+    <ul class="nav navbar-nav">
+      <li ng-show="isLoggedIn()"><a>{{ currentUser() }}</a></li>
+      <li ng-show="isLoggedIn()"><a href="" ng-click="logOut()">Log Out</a></li>
+      <li ng-hide="isLoggedIn()"><a href="/login">Log In</a></li>
+      <li ng-hide="isLoggedIn()"><a href="/register">Register</a></li>
+    </ul>
+  </nav>
+  
+   <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <ui-view></ui-view>
+    </div>
+  </div>
+
+  <script type="text/ng-template" id="/home.html">
+    <div class="page-header">
+      <h1>Flapper News</h1>
+    </div>    
+    <div id="post-list-wrap" class="row">
+      <table class="table table-inverse">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Author</th>            
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
+          <tr ng-repeat="post in posts | orderBy: '-upvotes'">
+            <td>{{$index+1}}</td>            
+            <td>
+              <span><img src="{{post.files[0] ? post.files[0] : '/uploads/no-image-icon.png'}}" class="img-rounded" alt="news-img" width="100" height="100"/></span>
+              <span style="font-size:20px;margin-left:10px">
+              <a ng-show="post.link" href="{{post.link ? post.link : '#'}}">{{post.title}}</a>
+              <span ng-hide="post.link">{{post.title}}</span> 
+            </td>
+            <td><span ng-show="post.author">posted by <a>{{post.author}}</a> |</span></td>
+            <td><p class="description">{{post.description}}</p></td>
+            <td>
+              <span class="glyphicon glyphicon-thumbs-up" ng-click="upvote(post)"></span>
+              {{post.upvotes}}
+              <span class="glyphicon glyphicon-thumbs-down" ng-click="downvote(post)"></span>
+              <span><a class="button" href="/posts/{{post._id}}"><span class="glyphicon glyphicon-check"></span></a></span>
+              <span class="glyphicon glyphicon-trash" ng-click="remove(post)"></span>
+            </td>            
+          </tr>
+        </thead>
+      </table>  
+        <!-- <div ng-repeat="post in posts | orderBy: '-upvotes'">
+          <span class="glyphicon glyphicon-thumbs-up" ng-click="upvote(post)"></span>
+            {{post.upvotes}}
+          <span class="glyphicon glyphicon-thumbs-down" ng-click="downvote(post)"></span>
+          <span style="font-size:20px;margin-left:10px">
+            <a ng-show="post.link" href="{{post.link ? post.link : '#'}}">{{post.title}}</a>
+            <span ng-hide="post.link">{{post.title}}</span>
+            <span ng-show="post.author">posted by <a>{{post.author}}</a> |</span>      
+          </span>
+          <span><a href="#/posts/{{post._id}}">Comments</a>({{post.comments.length}})</span>
+          <span><img src="{{post.files[0] ? post.files[0] : '/uploads/no-image-icon.png'}}" class="img-rounded" alt="news-img" width="100" height="100"/></span>
+          <p class="description">{{post.description}}</p>
+        </div> -->
+    </div>
+    <form ng-submit="addPost()" ng-show="isLoggedIn()" style="margin-top:30px" enctype="multipart/form-data" name="postForm"> 
+      <h3>Add a new post:</h3>
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Title"  ng-model="title"/>
+      </div>
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Link" ng-model="link"/>
+      </div>
+      <div class="form-group">
+        <textarea class="form-control" placeholder="Description" ng-model="description"/></textarea>
+      </div>
+      <div class="form-group">
+        <select ng-model="status" placeholder="Choose a State" class="form-control" required ng-options='option.value as option.name for option in typeOptions'></select>
+      </div>
+      <div class="form-group">
+        <select ng-model="status" placeholder="Choose a Category" class="form-control" required ng-options='category.value as category.name for category in categories'></select>
+        <button ng-click="addCategory()">Add Category</button>
+      </div>
+      <div class="form-group">
+        <!-- <datetimepicker data-ng-model="date"></datetimepicker> -->
+        <div class="dropdown">
+          <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="#">
+            <div class="input-group"><input type="text" class="form-control" data-ng-model="created"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+            </div>
+          </a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+            <datetimepicker data-ng-model="created" data-datetimepicker-config="{ dropdownSelector: '#dropdown2' }" data-on-set-time="onTimeSet(newDate, oldDate)"/>
+          </ul>
+        </div>
+      </div>
+      <div class="form-group">
+        <!-- <input type="file" class="" ng-model="image"/> -->
+          <input type="file" ngf-select ng-model="picFile" name="file" accept="image/*" ngf-max-size="2MB" ngf-model-invalid="errorFile">
+          <i ng-show="postForm.file.$error.maxSize">File too large {{errorFile.size / 1000000|number:1}}MB: max 2M</i>
+          <img ng-show="postForm.file.$valid" ngf-thumbnail="picFile" class="thumb"> <button ng-click="picFile = null" ng-show="picFile">Remove</button>
+      </div>
+      <button type="submit" class="btn btn-primary">Post</button>
+    </form>
+  	<div ng-hide="isLoggedIn()">
+  	  <h3>You need to <a href="/login">Log In</a> or <a href="/register">Register</a> before you can add a post.</h3>
+  	</div>
+  </script>
+
+  <script type="text/ng-template" id="/posts.html">
+    <div class="page-header">
+      <h3>
+        <a ng-show="post.link" href="{{post.link}}">
+          {{post.title}}
+        </a>
+        <span ng-hide="post.link">
+          {{post.title}}
+        </span>
+      </h3>
+    </div>
+
+    <div ng-repeat="comment in post.comments | orderBy:'-upvotes'">
+      <span class="glyphicon glyphicon-thumbs-up" ng-click="upvote(comment)"></span>
+        {{comment.upvotes}} 
+      <span class="glyphicon glyphicon-thumbs-down" ng-click="downvote(comment)"></span>
+        - by {{comment.author}}
+      <span style="font-size:20px; margin-left:10px;">
+        {{comment.body}}
+      </span>
+    </div>
+
+    <form ng-submit="addComment()" ng-show="isLoggedIn()" style="margin-top:30px;">
+      <h3>Add a new comment</h3>
+
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Comment" ng-model="body"></input>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Post</button>
+    </form>
+    <div ng-hide="isLoggedIn()">
+	  <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can comment.</h3>
+	</div>
+  </script>
+  
+  <script type="text/ng-template" id="/register.html">
+	  <div class="page-header">
+	    <h1>Flapper News</h1>
+	  </div>
+	
+	  <div ng-show="error" class="alert alert-danger row">
+	    <span>{{ error.message }}</span>
+	  </div>
+	
+	  <form ng-submit="register()"
+	    style="margin-top:30px;">
+	    <h3>Register</h3>
+	    <div class="form-group">
+	      <input type="text" class="form-control" placeholder="Username" ng-model="user.username"></input>
+	    </div>
+	    <div class="form-group">
+	      <input type="password" class="form-control" placeholder="Password" ng-model="user.password"></input>
+	    </div>
+	    <button type="submit" class="btn btn-primary">Register</button>
+	  </form>
+	</script>
+
+
+<!-- 	<script type="text/ng-template" id="/login.html">
+	  <div class="page-header">
+	    <h1>Flapper News</h1>
+	  </div>
+	
+	  <div ng-show="error" class="alert alert-danger row">
+	    <span>{{ error.message }}</span>
+	  </div>
+	
+	  <form ng-submit="logIn()"
+	    style="margin-top:30px;">
+	    <h3>Log In</h3>
+	
+	    <div class="form-group">
+	      <input type="text" class="form-control" placeholder="Username" ng-model="user.username"></input>
+	    </div>
+	    <div class="form-group">
+	      <input type="password" class="form-control" placeholder="Password" ng-model="user.password"></input>
+	    </div>
+	    <button type="submit" class="btn btn-primary">Log In</button>
+	  </form>
+  </script>		 -->			  
+
+  </body>
+</html>

@@ -1,0 +1,10 @@
+New things to implement
+1] implement image/file upload in news : done
+2] Add details to a news : done
+3] Add date time to news with datetime picker 
+4] Add state of a news like publish/draft/trash/archive done
+5] Saw details of a news
+6] Add categories
+7] Relates post to category
+8] Add Reviews
+
