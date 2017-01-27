@@ -12,9 +12,9 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 console.log("app step1");
 // connect MongoDB
-mongoose.connect('mongodb://localhost/news1', function(err,db){
+mongoose.connect('mongodb://localhost/vod', function(err,db){
     if (!err){
-        console.log('Connected to /news1!');
+        console.log('Connected to /vod!');
     } else{
         console.dir(err); //failed to connect
     }
