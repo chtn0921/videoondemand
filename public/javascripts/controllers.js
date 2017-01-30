@@ -17,8 +17,8 @@ function($scope, $filter, Upload, promiseObj, auth,posts) {
     	console.log("Add category initialize");
     };
     	
-	if(typeof promiseObj.data != "undefined"){
-		$scope.posts = promiseObj.data;
+	if(typeof promiseObj != "undefined"){
+		$scope.posts = promiseObj;
 	}
 	//$scope.posts = posts.posts;	
 	$scope.isLoggedIn = auth.isLoggedIn;
@@ -26,6 +26,19 @@ function($scope, $filter, Upload, promiseObj, auth,posts) {
 	$scope.title = '';
 
 	$scope.created = $filter('date')(Date.now(),'dd-MM-yyyy'); 
+	
+	$scope.current_movie = null;
+
+	$scope.select_movie = function(id) {								
+								$scope.posts.forEach(function(entry){
+									console.log(entry.length);
+									for(var i = 0; i<entry.length; i++) {										
+										if(entry[i].hasOwnProperty("id") && entry[i]["id"] === id) {
+								            $scope.current_movie = entry[i];								        
+								        }
+								    }
+								});							    
+							};
 
 	$scope.onTimeSet = function (newDate, oldDate) {
 	    console.log("newDate : ",newDate);
@@ -128,7 +141,6 @@ function($scope, posts, post, auth) {
 	$scope.downvote = function(comment) {
 		posts.downvoteComment(post, comment);
 	};
-
 }]);
 
 app.controller('AuthCtrl', ['$scope', '$state', 'auth',

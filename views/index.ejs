@@ -1,9 +1,11 @@
+<!DOCTYPE html>
 <html>
 <head>
-  <title>Flapper News</title>
+  <title>Vedio On Demand</title>
   <link href="nmd/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="stylesheets/style.css" rel="stylesheet">
   <link rel="stylesheet" href="nmd/angular-bootstrap-datetimepicker/src/css/datetimepicker.css"/>
+  <link rel="stylesheet" href="nmd/video.js/dist/video-js.min.css"/>
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
   <script type="text/javascript" src="nmd/bootstrap/dist/js/bootstrap.js"></script>
   <script type="text/javascript" src="nmd/moment/min/moment.min.js"></script>
@@ -12,7 +14,8 @@
   <script src="https://angular-file-upload.appspot.com/js/ng-file-upload-shim.js"></script>
   <script src="https://angular-file-upload.appspot.com/js/ng-file-upload.js"></script>
   <script type="text/javascript" src="nmd/angular-bootstrap-datetimepicker/src/js/datetimepicker.js"></script>
-  <script type="text/javascript" src="nmd/angular-bootstrap-datetimepicker/src/js/datetimepicker.templates.js"></script>  
+  <script type="text/javascript" src="nmd/angular-bootstrap-datetimepicker/src/js/datetimepicker.templates.js"></script> 
+  <script type="text/javascript" src="nmd/video.js/dist/videojs-ie8.min.js"></script>
   <script src="javascripts/angularApp.js"></script>
   <script src="javascripts/factories.js"></script>
   <script src="javascripts/controllers.js"></script> 
@@ -33,193 +36,8 @@
       <ui-view></ui-view>
     </div>
   </div>
-
-  <script type="text/ng-template" id="/home.html">
-    <div class="page-header">
-      <h1>Video On Demand</h1>
-    </div>    
-    <div id="post-list-wrap" class="row">
-      <div class="container">
-        <div class="col-xs-12">
-            <div class="carousel slide" id="myCarousel">
-                <div class="carousel-inner">
-                    <div class="item active">
-                      <ul class="thumbnails">
-                        <li class="col-sm-3">
-                            <div class="fff">
-                              <div class="thumbnail">
-                                <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
-                              </div>
-                              <div class="caption">
-                                <h4>Praesent commodo</h4>
-                                <p>Nullam Condimentum Nibh Etiam Sem</p>
-                                <a class="btn btn-mini" href="#">» Read More</a>
-                              </div>
-                            </div>
-                        </li>
-                        <li class="col-sm-3">
-                          <div class="fff">
-                            <div class="thumbnail">
-                              <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
-                            </div>
-                            <div class="caption">
-                              <h4>Praesent commodo</h4>
-                              <p>Nullam Condimentum Nibh Etiam Sem</p>
-                              <a class="btn btn-mini" href="#">» Read More</a>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="col-sm-3">
-                          <div class="fff">
-                            <div class="thumbnail">
-                              <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
-                            </div>
-                            <div class="caption">
-                              <h4>Praesent commodo</h4>
-                              <p>Nullam Condimentum Nibh Etiam Sem</p>
-                              <a class="btn btn-mini" href="#">» Read More</a>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="col-sm-3">
-                            <div class="fff">
-                              <div class="thumbnail">
-                                <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
-                              </div>
-                              <div class="caption">
-                                <h4>Praesent commodo</h4>
-                                <p>Nullam Condimentum Nibh Etiam Sem</p>
-                                <a class="btn btn-mini" href="#">» Read More</a>
-                              </div>
-                            </div>
-                        </li>
-                      </ul>
-                    </div><!-- /Slide1 --> 
-                    <div class="item">
-                      <ul class="thumbnails">
-                        <li class="col-sm-3">
-                          <div class="fff">
-                            <div class="thumbnail">
-                              <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
-                            </div>
-                            <div class="caption">
-                              <h4>Praesent commodo</h4>
-                              <p>Nullam Condimentum Nibh Etiam Sem</p>
-                              <a class="btn btn-mini" href="#">» Read More</a>
-                            </div>
-                          </div>
-                        </li>
-                                <li class="col-sm-3">
-                      <div class="fff">
-                        <div class="thumbnail">
-                          <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
-                        </div>
-                        <div class="caption">
-                          <h4>Praesent commodo</h4>
-                          <p>Nullam Condimentum Nibh Etiam Sem</p>
-                          <a class="btn btn-mini" href="#">» Read More</a>
-                        </div>
-                                    </div>
-                                </li>
-                                <li class="col-sm-3">
-                      <div class="fff">
-                        <div class="thumbnail">
-                          <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
-                        </div>
-                        <div class="caption">
-                          <h4>Praesent commodo</h4>
-                          <p>Nullam Condimentum Nibh Etiam Sem</p>
-                          <a class="btn btn-mini" href="#">» Read More</a>
-                        </div>
-                                    </div>
-                                </li>
-                                <li class="col-sm-3">
-                      <div class="fff">
-                        <div class="thumbnail">
-                          <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
-                        </div>
-                        <div class="caption">
-                          <h4>Praesent commodo</h4>
-                          <p>Nullam Condimentum Nibh Etiam Sem</p>
-                          <a class="btn btn-mini" href="#">» Read More</a>
-                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                      </div><!-- /Slide2 --> 
-                    <div class="item">
-                            <ul class="thumbnails">
-                                <li class="col-sm-3"> 
-                      <div class="fff">
-                        <div class="thumbnail">
-                          <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
-                        </div>
-                        <div class="caption">
-                          <h4>Praesent commodo</h4>
-                          <p>Nullam Condimentum Nibh Etiam Sem</p>
-                          <a class="btn btn-mini" href="#">» Read More</a>
-                        </div>
-                                    </div>
-                                </li>
-                                <li class="col-sm-3">
-                      <div class="fff">
-                        <div class="thumbnail">
-                          <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
-                        </div>
-                        <div class="caption">
-                          <h4>Praesent commodo</h4>
-                          <p>Nullam Condimentum Nibh Etiam Sem</p>
-                          <a class="btn btn-mini" href="#">» Read More</a>
-                        </div>
-                                    </div>
-                                </li>
-                                <li class="col-sm-3">
-                      <div class="fff">
-                        <div class="thumbnail">
-                          <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
-                        </div>
-                        <div class="caption">
-                          <h4>Praesent commodo</h4>
-                          <p>Nullam Condimentum Nibh Etiam Sem</p>
-                          <a class="btn btn-mini" href="#">» Read More</a>
-                        </div>
-                                    </div>
-                                </li>
-                                <li class="col-sm-3">
-                      <div class="fff">
-                        <div class="thumbnail">
-                          <a href="#"><img src="http://placehold.it/360x240" alt=""></a>
-                        </div>
-                        <div class="caption">
-                          <h4>Praesent commodo</h4>
-                          <p>Nullam Condimentum Nibh Etiam Sem</p>
-                          <a class="btn btn-mini" href="#">» Read More</a>
-                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                      </div><!-- /Slide3 --> 
-                </div>
-                
-               
-             <nav>
-              <ul class="control-box pager">
-                <li><a data-slide="prev" href="#myCarousel" class=""><i class="glyphicon glyphicon-chevron-left"></i></a></li>
-                <li><a data-slide="next" href="#myCarousel" class=""><i class="glyphicon glyphicon-chevron-right"></i></li>
-              </ul>
-            </nav>
-             <!-- /.control-box -->   
-                                      
-            </div><!-- /#myCarousel -->
-                
-        </div><!-- /.col-xs-12 -->          
-
-        </div><!-- /.container -->    
-    </div>    
-  	<div ng-hide="isLoggedIn()">
-  	  <h3>You need to <a href="/login">Log In</a> or <a href="/register">Register</a> before you can add a post.</h3>
-  	</div>
-  </script>
+  <!-- <script type="text/ng-template" id="/home.html">    
+  </script> -->
 
   <script type="text/ng-template" id="/posts.html">
     <div class="page-header">
@@ -253,8 +71,8 @@
       <button type="submit" class="btn btn-primary">Post</button>
     </form>
     <div ng-hide="isLoggedIn()">
-	  <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can comment.</h3>
-	</div>
+	     <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can comment.</h3>
+	  </div>
   </script>
   
   <script type="text/ng-template" id="/register.html">
@@ -278,30 +96,5 @@
 	    <button type="submit" class="btn btn-primary">Register</button>
 	  </form>
 	</script>
-
-
-<!-- 	<script type="text/ng-template" id="/login.html">
-	  <div class="page-header">
-	    <h1>Flapper News</h1>
-	  </div>
-	
-	  <div ng-show="error" class="alert alert-danger row">
-	    <span>{{ error.message }}</span>
-	  </div>
-	
-	  <form ng-submit="logIn()"
-	    style="margin-top:30px;">
-	    <h3>Log In</h3>
-	
-	    <div class="form-group">
-	      <input type="text" class="form-control" placeholder="Username" ng-model="user.username"></input>
-	    </div>
-	    <div class="form-group">
-	      <input type="password" class="form-control" placeholder="Password" ng-model="user.password"></input>
-	    </div>
-	    <button type="submit" class="btn btn-primary">Log In</button>
-	  </form>
-  </script>		 -->			  
-
   </body>
 </html>

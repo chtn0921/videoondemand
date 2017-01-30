@@ -64,15 +64,37 @@ function($http, auth) {
 			angular.copy(data, o.posts);
 			return data;
 		});*/
-
+		var movies = [];
+		
 		return $http({
 	        method : "GET",
-	        url : '/posts'
-	    }).then(function mySucces(response) {
-	       angular.copy(response.data, o.posts);
-	       return response;
+	        url : 'https://demo2697834.mockable.io/movies'
+	    }).then(function mySucces(response) {	       
+	       //console.log("Start Getting movies :: ",(response.data.entries && ( response.data.entries.length > 0 ) ));
+	       if(response.data.entries && ( response.data.entries.length > 0 ) ){
+	       		var start = 0;
+	       		var i = 0;
+	       		response.data.entries.forEach( function(entry){
+	       			if((i!= 0) && (i%4 == 0)){
+				    	start++;
+				    }
+				    if(movies[start]){
+			//	    	console.log("push entries in array: ",start);
+				    	movies[start].push(entry);	
+				    } else {
+			//	    	console.log("start create array: ",start);
+				    	movies[start] = new Array(entry);
+				    }					
+					i++;
+				});
+	       }
+	       //console.log("Getting movies :: ",movies);
+	       angular.copy(movies, o.posts);
+	       //angular.copy(response.data, o.posts);	       
+	       //return response;
+	       return o.posts;
 	    }, function myError(response) {
-	       console.log(response)
+	       console.log("Error Response :: ",response);
 	       return response;
 	    });	    
 	};
