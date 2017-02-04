@@ -1,15 +1,15 @@
-app.controller('MainCtrl', ['$scope', '$filter','Upload', 'promiseObj', 'auth','posts',
-function($scope, $filter, Upload, promiseObj, auth,posts) {
-	/*console.log("Test");*/
-	console.log("promiseObj : ",promiseObj);
+app.controller('MainCtrl', ['$scope', '$filter', 'promiseObj', 'auth','posts',
+function($scope, $filter, promiseObj, auth,posts) {
+
+	//console.log("promiseObj : ",promiseObj);
 	$scope.posts = [];
 
 	$scope.typeOptions = [
 	    { name: 'Publish', value: 'publish' }, 
 	    { name: 'Draft', value: 'draft' }
     ];
-    $scope.status = 'publish';
 
+    $scope.status = 'publish';
 
     $scope.categories = [];
     $scope.category = $scope.categories['0']  || "";
@@ -23,21 +23,21 @@ function($scope, $filter, Upload, promiseObj, auth,posts) {
 	//$scope.posts = posts.posts;	
 	$scope.isLoggedIn = auth.isLoggedIn;
 	//setting title to blank here to prevent empty posts
-	$scope.title = '';
+	$scope.title = 'Home';
 
 	$scope.created = $filter('date')(Date.now(),'dd-MM-yyyy'); 
 	
 	$scope.current_movie = null;
 
-	$scope.select_movie = function(id) {								
+	$scope.select_movie = function(id) {
 								$scope.posts.forEach(function(entry){
-									console.log(entry.length);
 									for(var i = 0; i<entry.length; i++) {										
 										if(entry[i].hasOwnProperty("id") && entry[i]["id"] === id) {
-								            $scope.current_movie = entry[i];								        
+								            $scope.current_movie = entry[i];	
+								            posts.addToUserHistory({"id":entry[i]["id"]});
 								        }
 								    }
-								});							    
+								});
 							};
 
 	$scope.onTimeSet = function (newDate, oldDate) {
@@ -45,102 +45,26 @@ function($scope, $filter, Upload, promiseObj, auth,posts) {
 	    console.log("oldDate : ",oldDate);
 	}
 
-	// upload on file select or drop 
-    $scope.upload = function (file) {
-        Upload.upload({
-            url: '/upload/',
-            data: {file: file}
-        }).then(function (resp) {
-        	//console.log("resp : ",resp);
-            //console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
-            if(resp.data.status){
-            	//save posts data
-            	posts.create({
-					title : $scope.title,
-					link : $scope.link,
-					files : [resp.data.files],
-					description : $scope.description,
-					status : $scope.status
-				});
-				//clear the values
-				/*$scope.title = '';
-				$scope.link = '';
-				$scope.description = '';
-				$scope.created = '';*/
-            }            
-        }, function (resp) {
-        	console.log("error resp : ",resp);
-            console.log('Error status: ' + resp.status);
-        }, function (evt) {
-            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-            console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
-        });
-    };
-
-	$scope.addPost = function() {
-		if ($scope.title === '') {
-			return;
-		}
-		//console.log("$scope.picFile	 : ",	$scope.picFile);
-		if($scope.picFile){
-			$scope.upload($scope.picFile);
-		} else {
-			posts.create({
-				title : $scope.title,
-				link : $scope.link,
-				description : $scope.description,
-				status: $scope.status
-			});			
-		}
-		//clear the values
-		$scope.title = '';
-		$scope.link = '';
-		$scope.description = '';
-		$scope.posts = posts.posts;	
-		$scope.status = 'publish';	
-	};
-
-	$scope.upvote = function(post) {
-		//our post factory has an upvote() function in it
-		//we're just calling this using the post we have
-		console.log('Upvoting:' + post.title + "votes before:" + post.upvotes);
-		posts.upvote(post);
-	};
-	$scope.downvote = function(post) {
-		posts.downvote(post);
-	};
-
-	/*$scope.$watch('created',function(newValue,OldValue,scope){
-		console.log("watch : ",typeof newValue);
-		//var mydate = new Date(newValue);
-   		//$scope.created = mydate.toString("MMMM yyyy");
-	})*/
 }]);
 
-app.controller('PostsCtrl', ['$scope', 'posts', 'post', 'auth',
-function($scope, posts, post, auth) {
-	$scope.post = post;
+app.controller('HistoryCtrl',['$scope', '$filter','moviesObj','historyObj','auth','posts',
+function($scope, $filter, moviesObj, historyObj, auth, posts) {
 	$scope.isLoggedIn = auth.isLoggedIn;
-
-	$scope.addComment = function() {
-		if ($scope.body === '') {
-			return;
+	$scope.title = "My History";
+	$scope.myhistory = [];	
+	if(typeof moviesObj != "undefined"){			
+		if(typeof historyObj != "undefined" && (historyObj.length > 0)){
+			for (var i = 0; i < moviesObj.length; i++) {
+				console.log("moviesObj[i] :: ",moviesObj[i]);
+				moviesObj[i].find(function(movie){
+					console.log("moviesObj.indexOf(movie.id) :: ",movie.id);
+					if(historyObj.indexOf(movie.id) >= 0)  {
+						$scope.myhistory.push(movie);
+					}
+				});
+			}		
 		}
-		posts.addComment(post._id, {
-			body : $scope.body,
-			author : 'user'
-		}).success(function(comment) {
-			$scope.post.comments.push(comment);
-		});
-		$scope.body = '';
-	};
-	$scope.upvote = function(comment) {
-		posts.upvoteComment(post, comment);
-	};
-
-	$scope.downvote = function(comment) {
-		posts.downvoteComment(post, comment);
-	};
+	}
 }]);
 
 app.controller('AuthCtrl', ['$scope', '$state', 'auth',
@@ -159,7 +83,9 @@ function($scope, $state, auth) {
 		auth.logIn($scope.user).catch(function(error) {
 			$scope.error = error;
 		}).then(function() {
-			$state.go('home');
+			if(!$scope.error){
+				$state.go('home');	
+			}			
 		});
 	};
 }]);

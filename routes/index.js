@@ -5,7 +5,8 @@ var passport = require('passport');
 var jwt = require('express-jwt');
 
 var Post = mongoose.model('Post');
-var Comment = mongoose.model('Comment');
+/*var Comment = mongoose.model('Comment');*/
+var History = mongoose.model('History');
 var User = mongoose.model('User');
 console.log("app step12");
 var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
@@ -13,12 +14,19 @@ var auth = jwt({secret: 'SECRET', userProperty: 'payload'});
 
 /* GET Index page. */
 router.get('/', function(req, res) {
-  console.log("app step render index");
+  console.log("app step render root");
   res.render('index');
 });
+
 /* GET Home page. */
 router.get('/home', function(req, res) {
-  console.log("app step render index");
+  console.log("app step render home");
+  res.render('index');
+});
+
+/* GET History page. */
+router.get('/history', function(req, res) {
+  console.log("app render history");
   res.render('index');
 });
 
@@ -119,6 +127,55 @@ router.put('/posts/:post/comments/:comment/downvote', auth, function(req, res, n
     if (err) { return next(err); }
 
     res.json(comment);
+  });
+});
+
+router.get('/myhistory/', auth, function(req, res, next) {
+  History.findOne({"user":req.payload._id}, function(err, hdata){
+    if(err){
+      conole.log('err in find user history:  ',err);
+      return next(err); 
+    }
+    console.log('history data : ', hdata); //this shows the correct user id
+    res.json(hdata.user_history);     
+  });
+});
+
+router.post('/history/', auth, function(req, res, next) {
+  console.log("history req.body: ",req.body);
+  console.log("history req.payload: ",req.payload);  
+  History.findOne({"user":req.payload._id}, function(err, hdata){
+    if(err){ 
+      conole.log('err in find user history:  ',err);
+      return next(err); 
+    }    
+    console.log('history data : ', hdata); //this shows the correct user id
+    if(hdata){      
+      if(hdata.user_history.indexOf(req.body.id) == -1){
+        //update schema
+        console.log('save to history data : ',hdata);
+        hdata.user_history.push(req.body.id);
+        hdata.save();        
+      }
+      res.json(hdata);
+    } else {
+      //save new data to schema
+      console.log('create history data : ');
+      var history = new History();    
+      history.user = req.payload._id;
+      history.user_history = [req.body.id];
+      var promise = history.save(); 
+      promise.then(
+        function(history){
+          res.json(history);    
+        } , function(error) {
+          if(err){ 
+            console.log("Error :: ",err);
+            return next(err); 
+          }
+        }    
+      );
+    }
   });
 });
 

@@ -10,8 +10,7 @@ console.log("app start");
 
 var mongoose = require('mongoose');
 var passport = require('passport');
-//console.log("app step1");
-// connect MongoDB
+//connect MongoDB
 //mongoose.connect('mongodb://localhost/vod', function(err,db){
 mongoose.connect(process.env.MONGOLAB_URI, function(err,db){
     if (!err){
@@ -23,7 +22,7 @@ mongoose.connect(process.env.MONGOLAB_URI, function(err,db){
 });
 //console.log("app step2");
 require('./models/Posts');
-require('./models/Comments');
+require('./models/Histories');
 require('./models/Users');
 require('./config/passport');
 //console.log("app step3");
@@ -42,14 +41,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-//app.use(express.static(path.join(__dirname, 'uploads')));
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-/*app.use('/abdtp-files', express.static(path.join(__dirname, 'node_modules/angular-bootstrap-datetimepicker/src')));
-app.use('/moment-script', express.static(path.join(__dirname, 'node_modules/moment')));*/
 app.use('/nmd', express.static(path.join(__dirname, 'node_modules')));
 
 app.use(passport.initialize());
-//console.log("app step6");
+
 app.use('/', routes);
 app.use('/users', users);
 app.use('/upload', upload);

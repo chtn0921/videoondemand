@@ -1,14 +1,19 @@
-app.factory('auth', ['$http', '$window',
-function($http, $window) {
+app.factory('auth', ['$http', '$window', '$state',
+function($http, $window, $state) {
 	var auth = {};
 
 	auth.saveToken = function(token) {
-		$window.localStorage['flapper-news-token'] = token;
+		$window.localStorage['vod-auth-token'] = token;
 	};
 
 	auth.getToken = function() {
-		return $window.localStorage['flapper-news-token'];
-	}
+		return $window.localStorage['vod-auth-token'];
+	};
+
+	auth.logOut = function() {
+		$window.localStorage.removeItem('vod-auth-token');
+		$state.go('login');
+	};
 
 	auth.isLoggedIn = function() {
 		var token = auth.getToken();
@@ -44,26 +49,18 @@ function($http, $window) {
 		});
 	};
 
-	auth.logOut = function() {
-		$window.localStorage.removeItem('flapper-news-token');
-	};
-
 	return auth;
 }]);
 
 app.factory('posts', ['$http', 'auth',
 function($http, auth) {
 	var o = {
-		posts : []
+		posts : [],		
+		myhistory : []
 	};
 
 	o.getAll = function() {
-		console.log("callinbg getAll");
-		/*return $http.get('/posts').success(function(data) {
-			alert(555)
-			angular.copy(data, o.posts);
-			return data;
-		});*/
+		//console.log("callinbg getAll");
 		var movies = [];
 		
 		return $http({
@@ -79,18 +76,15 @@ function($http, auth) {
 				    	start++;
 				    }
 				    if(movies[start]){
-			//	    	console.log("push entries in array: ",start);
 				    	movies[start].push(entry);	
 				    } else {
-			//	    	console.log("start create array: ",start);
 				    	movies[start] = new Array(entry);
 				    }					
 					i++;
 				});
 	       }
 	       //console.log("Getting movies :: ",movies);
-	       angular.copy(movies, o.posts);
-	       //angular.copy(response.data, o.posts);	       
+	       angular.copy(movies, o.posts);	       
 	       //return response;
 	       return o.posts;
 	    }, function myError(response) {
@@ -103,62 +97,27 @@ function($http, auth) {
 	//when $http gets a success back, it adds this post to the posts object in
 	//this local factory, so the mongodb and angular data is the same
 	//sweet!
-	o.create = function(post) {
-	  return $http.post('/posts', post, {
-	    headers: {Authorization: 'Bearer '+auth.getToken()}
-	  }).then(function(response){
-	  	console.log("after create post data : ",response.data);
-	    o.posts.push(response.data);
-	  });
+
+	o.addToUserHistory = function(movie_id){
+		return $http.post('/history', movie_id, {
+		    headers: {Authorization: 'Bearer '+auth.getToken()}
+		}).then(function(response){
+		  	console.log("after  : ",response.data);
+		    o.posts.push(response.data);
+		});	
 	};
-	
-	o.upvote = function(post) {
-	  return $http.put('/posts/' + post._id + '/upvote', null, {
-	    headers: {Authorization: 'Bearer '+auth.getToken()}
-	  }).then(function(data){
-	    post.upvotes += 1;
-	  });
+
+	o.getUserHistory = function(){
+		console.log("o.getUserHistory token :: ",auth.getToken());
+		return $http.get('/myhistory',{
+				    headers: {Authorization: 'Bearer '+auth.getToken()}
+				}).then(function(response){
+				  	//console.log("after fetching in user history  : ",response.data);					
+					return response.data;
+				}, function(error){
+					//console.log("Error fetching in user history",error);	
+					return error;			
+				});	
 	};
-	//downvotes
-	o.downvote = function(post) {
-	  return $http.put('/posts/' + post._id + '/downvote', null, {
-	    headers: {Authorization: 'Bearer '+auth.getToken()}
-	  }).then(function(data){
-	    post.upvotes -= 1;
-	  });
-	};
-	//grab a single post from the server
-	o.get = function(id) {
-		//use the express route to grab this post and return the response
-		//from that route, which is a json of the post data
-		//.then is a promise, a kind of newly native thing in JS that upon cursory research
-		//looks friggin sweet; TODO Learn to use them like a boss.  First, this.
-		return $http.get('/posts/' + id).then(function(res) {
-			return res.data;
-		});
-	};
-	//comments, once again using express
-	o.addComment = function(id, comment) {
-	  return $http.post('/posts/' + id + '/comments', comment, {
-	    headers: {Authorization: 'Bearer '+auth.getToken()}
-	  });
-	};
-	
-	o.upvoteComment = function(post, comment) {
-	  return $http.put('/posts/' + post._id + '/comments/'+ comment._id + '/upvote', null, {
-	    headers: {Authorization: 'Bearer '+auth.getToken()}
-	  }).then(function(data){
-	    comment.upvotes += 1;
-	  });
-	};	
-	//downvote comments
-	//I should really consolidate these into one voteHandler function
-	o.downvoteComment = function(post, comment) {
-	  return $http.put('/posts/' + post._id + '/comments/'+ comment._id + '/downvote', null, {
-	    headers: {Authorization: 'Bearer '+auth.getToken()}
-	  }).then(function(data){
-	    comment.upvotes -= 1;
-	  });
-	};	
 	return o;
 }]);
