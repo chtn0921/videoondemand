@@ -1,7 +1,6 @@
 app.controller('MainCtrl', ['$scope', '$filter', 'promiseObj', 'auth','posts',
 function($scope, $filter, promiseObj, auth,posts) {
 
-	//console.log("promiseObj : ",promiseObj);
 	$scope.posts = [];
 
 	$scope.typeOptions = [
@@ -38,6 +37,13 @@ function($scope, $filter, promiseObj, auth,posts) {
 								        }
 								    }
 								});
+								var videoElements = angular.element.find('video');
+								//console.log("videoElements :: ",angular.element.find('video'));
+								if(videoElements[0]){
+									videoElements[0].pause();
+									videoElements[0].currentTime = 0;
+									videoElements[0].play();
+								}								
 							};
 
 	$scope.onTimeSet = function (newDate, oldDate) {
@@ -72,17 +78,21 @@ function($scope, $state, auth) {
 	$scope.user = {};
 
 	$scope.register = function() {
+		$scope.error = null;
 		auth.register($scope.user).catch(function(error) {
-			$scope.error = error;
+			$scope.error = error.data;
 		}).then(function() {
-			$state.go('home');
+			if(!$scope.error){
+				$state.go('home');
+			}
 		});
 	};
 
 	$scope.logIn = function() {
-		auth.logIn($scope.user).catch(function(error) {
-			$scope.error = error;
-		}).then(function() {
+		$scope.error = null;
+		auth.logIn($scope.user).catch(function(error) {			
+			$scope.error = error.data;
+		}).then(function() {			
 			if(!$scope.error){
 				$state.go('home');	
 			}			

@@ -21,12 +21,10 @@ mongoose.connect(process.env.MONGOLAB_URI, function(err,db){
     }
 });
 //console.log("app step2");
-require('./models/Posts');
 require('./models/Histories');
 require('./models/Users');
 require('./config/passport');
 //console.log("app step3");
-var upload = require('./routes/upload');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 //console.log("app step4");
@@ -49,7 +47,6 @@ app.use(passport.initialize());
 
 app.use('/', routes);
 app.use('/users', users);
-app.use('/upload', upload);
 //console.log("app step7");
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -81,7 +78,4 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
-//console.log("app step10");
-
 module.exports = app;
-//console.log("app step11");
